@@ -25,3 +25,12 @@ test_lbf_simple.py
 # Local training/eval logs and cluster launch script
 logs/
 run_socialjax.sh
+
+.venv/
+__pycache__/
+*.pyc
+*.bak
+checkpoints/
+logs/
+results_handoff.zip
+command_log.txt

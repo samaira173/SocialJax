@@ -304,8 +304,33 @@ def make_train(config):
             metric = traj_batch.info
             rng = update_state[-1]
 
+            
             def callback(metric):
+                import csv
+                import os
+
+                os.makedirs("results", exist_ok=True)
+                path = os.path.join(
+                    "results",
+                    f"transfer_coin_s{config['ENV_KWARGS']['s_interest']}_seed{config['SEED']}.csv",
+                )
+
+                row = {}
+                for key, value in metric.items():
+                    try:
+                        row[key] = float(value)
+                    except (TypeError, ValueError):
+                        row[key] = str(value)
+
+                write_header = not os.path.exists(path)
+                with open(path, "a", newline="", encoding="utf-8") as file:
+                    writer = csv.DictWriter(file, fieldnames=list(row.keys()))
+                    if write_header:
+                        writer.writeheader()
+                    writer.writerow(row)
+
                 wandb.log(metric)
+
 
             update_step = update_step + 1
             metric = jax.tree.map(lambda x: x.mean(), metric)
